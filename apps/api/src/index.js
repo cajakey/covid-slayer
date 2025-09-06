@@ -13,6 +13,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health check endpoint for Railway
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "OK", 
+    message: "Covid Slayer API is running",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({ 
+    status: "OK", 
+    message: "Covid Slayer API is healthy",
+    timestamp: new Date().toISOString()
+  });
+});
+
 const PORT = process.env.API_PORT || 4000;
 const MONGO_URI = process.env.MONGODB_URI;
 
