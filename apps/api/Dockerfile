@@ -1,30 +1,25 @@
-# Stage 1: builder
-FROM node:20 AS builder
+FROM node:20
 
-WORKDIR /usr/src/app
+# Set root working directory
+WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Copy everything needed
+# Copy root package.json (optional, for scripts or shared deps)
 COPY package.json ./
+
+# Copy API package.json
+COPY apps/api/package.json ./apps/api/
+
+# Install dependencies for API
+RUN cd apps/api && npm install
+
+# Copy API source code
 COPY apps/api ./apps/api
 
-# Install dependencies (simple)
-RUN pnpm install --shamefully-hoist
+# Set working directory to API
+WORKDIR /app/apps/api
 
-# Stage 2: runner
-FROM node:20 AS runner
-
-WORKDIR /usr/src/app
-
-RUN npm install -g pnpm
-
-# Copy API code + node_modules
-COPY --from=builder /usr/src/app/apps/api ./apps/api
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-
-WORKDIR /usr/src/app/apps/api
-
+# Expose port
 EXPOSE 4000
-CMD ["node", "src/index.js"]
+
+# Start the API server
+CMD ["npm", "start"]
