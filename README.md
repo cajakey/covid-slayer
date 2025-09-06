@@ -298,16 +298,20 @@ git push -u origin main
    - Click "New Project"
    - Select "Deploy from GitHub repo"
    - Choose your `covid-slayer` repository
-3. **Configure Environment Variables**:
+3. **Add MongoDB Database**:
+   - Click "New" → "Database" → "MongoDB"
+   - Copy the MongoDB connection string
+4. **Configure Environment Variables**:
    ```
    API_PORT=4000
    WEB_PORT=3000
    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/covid-slayer
-   JWT_SECRET=your-production-secret-key
+   JWT_SECRET=your-production-secret-key-minimum-32-characters
    NODE_ENV=production
    ```
-4. **Deploy**: Railway will automatically build and deploy your app
-5. **Access**: Get your live URL from Railway dashboard
+5. **Deploy**: Railway will use the root Dockerfile to build and deploy
+6. **Access**: Get your live API URL from Railway dashboard
+7. **Frontend**: Deploy separately or use Railway's static site hosting
 
 ### Option 2: Render (Free Tier Available)
 
