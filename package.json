@@ -2,11 +2,9 @@
   "name": "covid-slayer",
   "version": "1.0.0",
   "description": "Covid Slayer - A Tekken-like fighting game",
-  "main": "apps/api/src/index.js",
   "scripts": {
-    "start": "cd apps/api && npm start",
-    "dev": "cd apps/api && npm run dev",
-    "build": "cd apps/web && npm run build"
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api dev"
   },
   "keywords": ["game", "covid", "fighting", "mern", "docker"],
   "author": "",
