@@ -1,25 +1,27 @@
-FROM node:20
+# Stage 1 - deps install
+FROM node:20 AS builder
 
-# Set root working directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copy root package.json (optional, for scripts or shared deps)
-COPY package.json ./
+RUN npm install -g pnpm
 
-# Copy API package.json
-COPY apps/api/package.json ./apps/api/
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --prod=false
 
-# Install dependencies for API
-RUN cd apps/api && npm install
+COPY . .
 
-# Copy API source code
-COPY apps/api ./apps/api
+# Stage 2 - production image
+FROM node:20 AS runner
 
-# Set working directory to API
-WORKDIR /app/apps/api
+WORKDIR /usr/src/app
 
-# Expose port
+RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --prod=true
+
+COPY --from=builder /usr/src/app/src ./src
+
 EXPOSE 4000
 
-# Start the API server
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
