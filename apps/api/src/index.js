@@ -18,26 +18,33 @@ app.get("/", (req, res) => {
   res.json({ 
     status: "OK", 
     message: "Covid Slayer API is running",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    port: PORT
   });
 });
 
 // Health check endpoint
 app.get("/health", (req, res) => {
+  const mongoStatus = mongoose.connection.readyState === 1 ? "connected" : "disconnected";
   res.json({ 
     status: "OK", 
     message: "Covid Slayer API is healthy",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    mongodb: mongoStatus,
+    port: PORT
   });
 });
 
-const PORT = process.env.API_PORT || 4000;
+const PORT = process.env.PORT || process.env.API_PORT || 4000;
 const MONGO_URI = process.env.MONGODB_URI;
 
 // Mongo connection
 mongoose.connect(MONGO_URI).then(() => {
   console.log("✅ MongoDB connected");
-}).catch(err => console.error("❌ MongoDB error", err));
+}).catch(err => {
+  console.error("❌ MongoDB error", err);
+  // Don't exit on MongoDB connection failure for health checks
+});
 
 // Routes
 app.use("/auth", authRoutes);
